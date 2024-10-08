@@ -1,1 +1,15 @@
 just a small jaj
+
+pi@AM5:~/am/pi/venv/Disco_Hudini $ /bin/python /home/pi/am/pi/venv/Disco_Hudini/Disco_Hudini.py
+/home/pi/am/pi/venv/Disco_Hudini/Disco_Hudini.py:23: RuntimeWarning: This channel is already in use, continuing anyway.  Use GPIO.setwarnings(False) to disable warnings.
+  GPIO.setup(RedPin, GPIO.OUT)
+/home/pi/am/pi/venv/Disco_Hudini/Disco_Hudini.py:24: RuntimeWarning: This channel is already in use, continuing anyway.  Use GPIO.setwarnings(False) to disable warnings.
+  GPIO.setup(GreenPin, GPIO.OUT)
+/home/pi/am/pi/venv/Disco_Hudini/Disco_Hudini.py:25: RuntimeWarning: This channel is already in use, continuing anyway.  Use GPIO.setwarnings(False) to disable warnings.
+  GPIO.setup(BluePin, GPIO.OUT)
+Traceback (most recent call last):
+  File "/home/pi/am/pi/venv/Disco_Hudini/Disco_Hudini.py", line 82, in <module>
+    loop()
+  File "/home/pi/am/pi/venv/Disco_Hudini/Disco_Hudini.py", line 69, in loop
+    GPIO.add_event_detect(EncPinA, GPIO.BOTH, callback=encoder_callback)
+RuntimeError: Failed to add edge detection
