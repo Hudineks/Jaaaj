@@ -1,1 +1,35 @@
 kljajkasdjkl
+
+
+import RPi.GPIO as GPIO
+import time
+
+EncPinA = 23
+ButtonPin = 25
+
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
+
+GPIO.setup(EncPinA, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(ButtonPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+def encoder_callback(channel):
+    print("Enkodér otočen")
+
+def button_callback(channel):
+    print("Tlačítko stisknuto")
+
+try:
+    if not GPIO.event_detected(EncPinA):
+        GPIO.add_event_detect(EncPinA, GPIO.BOTH, callback=encoder_callback)
+    if not GPIO.event_detected(ButtonPin):
+        GPIO.add_event_detect(ButtonPin, GPIO.FALLING, callback=button_callback, bouncetime=300)
+    
+    while True:
+        time.sleep(0.1)
+
+except KeyboardInterrupt:
+    pass
+
+finally:
+    GPIO.cleanup()
