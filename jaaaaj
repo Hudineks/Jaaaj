@@ -1,1 +1,58 @@
-bigger jaaaj
+import lgpio
+import time
+
+RedPin = 17
+GreenPin = 27
+BluePin = 22
+EncPinA = 23
+EncPinB = 24
+ButtonPin = 25
+
+PWM_FREQ = 1000
+current_color = [0, 0, 0]
+selected_color = 0
+brightness_step = 10
+
+# Otevře přístup k GPIO čipu
+h = lgpio.gpiochip_open(0)
+
+# Nastavení GPIO pinů
+lgpio.gpio_claim_input(h, EncPinA)
+lgpio.gpio_claim_input(h, EncPinB)
+lgpio.gpio_claim_input(h, ButtonPin)
+lgpio.gpio_claim_output(h, RedPin)
+lgpio.gpio_claim_output(h, GreenPin)
+lgpio.gpio_claim_output(h, BluePin)
+
+# Funkce pro změnu barev LED
+def update_led():
+    lgpio.tx_pwm(h, RedPin, PWM_FREQ, current_color[0])
+    lgpio.tx_pwm(h, GreenPin, PWM_FREQ, current_color[1])
+    lgpio.tx_pwm(h, BluePin, PWM_FREQ, current_color[2])
+    print(f"R={current_color[0]}, G={current_color[1]}, B={current_color[2]}")
+
+# Smyčka pro čtení stavu enkodéru
+try:
+    while True:
+        state_a = lgpio.gpio_read(h, EncPinA)
+        state_b = lgpio.gpio_read(h, EncPinB)
+        
+        if state_a == 0 and state_b == 1:
+            # Zvětšení jasu
+            current_color[selected_color] = min(current_color[selected_color] + brightness_step, 100)
+            update_led()
+        elif state_a == 1 and state_b == 0:
+            # Snížení jasu
+            current_color[selected_color] = max(current_color[selected_color] - brightness_step, 0)
+            update_led()
+        
+        if lgpio.gpio_read(h, ButtonPin) == 0:
+            selected_color = (selected_color + 1) % 3
+            print(f"Vybraná barva: {'Červená' if selected_color == 0 else 'Zelená' if selected_color == 1 else 'Modrá'}")
+        
+        time.sleep(0.1)
+
+except KeyboardInterrupt:
+    pass
+finally:
+    lgpio.gpiochip_close(h)  # Uvolní GPIO čip
